@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.ryall.weatherapp.R
 import com.ryall.weatherapp.databinding.ActivityHomeBinding
 import com.ryall.weatherapp.util.Constants.Companion.ICON_URL
 import com.ryall.weatherapp.util.NetworkConnection
@@ -51,7 +52,7 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             if (isConnected){
                 fetchLocation()
             }else{
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
             }
         })
     }
