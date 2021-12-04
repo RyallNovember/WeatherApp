@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationServices
 import com.ryall.weatherapp.R
 import com.ryall.weatherapp.databinding.ActivityHomeBinding
 import com.ryall.weatherapp.util.Constants.Companion.ICON_URL
+import com.ryall.weatherapp.util.Constants.Companion.REQUEST_CODE
 import com.ryall.weatherapp.util.NetworkHelper
 import com.ryall.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +67,7 @@ class HomeActivity : AppCompatActivity(), LocationListener {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                100
+                REQUEST_CODE
             )
             return
         }
