@@ -17,7 +17,7 @@ import com.google.android.gms.location.LocationServices
 import com.ryall.weatherapp.R
 import com.ryall.weatherapp.databinding.ActivityHomeBinding
 import com.ryall.weatherapp.util.Constants.Companion.ICON_URL
-import com.ryall.weatherapp.util.NetworkConnection
+import com.ryall.weatherapp.util.NetworkHelper
 import com.ryall.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
@@ -36,10 +36,9 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         checkInternetConnection()
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         binding.btnRefresh.setOnClickListener {
             checkInternetConnection()
@@ -47,14 +46,12 @@ class HomeActivity : AppCompatActivity(), LocationListener {
     }
 
     private fun checkInternetConnection(){
-        val networkConnection = NetworkConnection(applicationContext)
-        networkConnection.observe(this,  { isConnected->
-            if (isConnected){
-                fetchLocation()
-            }else{
-                Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
-            }
-        })
+        if(NetworkHelper.isNetworkConnected(this)){
+            fetchLocation()
+        }else{
+            Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun fetchLocation() {
@@ -77,10 +74,14 @@ class HomeActivity : AppCompatActivity(), LocationListener {
         val task = fusedLocationProviderClient.lastLocation
 
         task.addOnSuccessListener {
-            if (it != null) {
-                latitude = it.latitude
-                longitude = it.longitude
-                getWeather(latitude, longitude)
+            try {
+                if (it != null) {
+                    latitude = it.latitude
+                    longitude = it.longitude
+                    getWeather(latitude, longitude)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
